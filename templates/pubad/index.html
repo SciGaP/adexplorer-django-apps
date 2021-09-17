@@ -1,0 +1,542 @@
+{% extends 'adgene/base.html' %}
+{% block content %}
+{% load static %}
+{% load remove_space %}
+
+<style>
+.flexFont {
+  font-size: 0.8em;
+  }
+.th-theme-bg {
+  background-color: #d0a47c;
+  color:white;
+  }
+.toolTip {
+  position: absolute;
+  display: none;
+  min-width: 30px;
+  height: auto;
+  background: white;
+  border: 0px;
+  padding: 5px;
+  text-align: center;
+  opacity: 0.9;
+}
+.title-theme-bg {
+  background-color: #d0a47c;
+  color: white;
+  }
+.horizontalbar:hover {
+  fill: #c99969;
+}
+.horizontalbar-y-axis {
+  font-size: 17px;
+}
+.horizontalbar-x-axis {
+  font-size: 15px;
+}
+.tab-pane {
+  height: 450px;
+}
+.tab-pane-ctd {
+  height: 430px;
+}
+.loli-y-axis {
+  font-size: 18px;
+}
+</style>
+<script src="{% static 'pubad/js/horizontal_barchart.js' %}" charset="utf-8"></script>
+<script src="{% static 'pubad/js/pub_barbhart.js' %}" charset="utf-8"></script>
+<script src="{% static 'pubad/js/co_genes_lolipop_plot.js' %}" charset="utf-8"></script>
+
+<div class="row mx-4 mt-3">
+  <div class="col-10 offset-1">
+		<h4 sytle="color:#404040;">
+		  <b>PubAD </b>
+			<span style="font-size:10px;">PubAD provides dementia related publication information mined with NLP pipelines.</span>
+		</h4>
+	</div>	
+</div>
+<div class="row">
+  <div class="col-10 offset-1">
+		<hr class="m-0">
+	</div>	
+</div>
+
+<div class="row justify-content-center m-3">
+	<div class="col-8">
+		<form  action="{% url 'pubad_index' %}" method="POST">
+      {% csrf_token %}
+      <label class="radio-inline mx-2"><input type="radio" name="SearchCate" id="SearchCate" value="GeneQuery" checked>Gene Query</label>
+      <label class="radio-inline mx-2" style="color:#909499;"><input type="radio" class="MultiGeneRadio" name="SearchCate" id="SearchCate" value="BrainRegion" disabled>Brain Region</label>      
+      <label class="radio-inline mx-2" style="color:#909499;"><input type="radio" class="MultiGeneRadio" name="SearchCate" id="SearchCate" value="KeyWord" disabled>Key Word</label>      
+      <div class="input-group">
+        <input type="text" class="form-control" placeholder="Type in Gene Symbol or ENSEMBL ids." id="GeneName" name="GeneName" value="">
+        <div class="input-group-append">
+          <button class="btn btn-outline-secondary" type="submit" id="geneAdSearchButton">Search</button>
+        </div>  
+      </div>
+	  </form>      
+	</div>
+</div>
+
+
+<div class="row justify-content-center m-2 root">
+	<div class="col-10">
+		{% if result_display_status == 'init' %}
+			<div class="row">
+			  <div class="col-10 offset-1 text-center">
+			    <h4 class="mt-5" style="color:#909499;">Search results will be shown here.</h4>
+			  </div>
+			</div>
+			<div class="row">
+			  <div class="col-10 offset-1 text-center">
+			    <img src="{% static 'adgene/ade_background.png' %}" style="width:100%;">
+			  </div>
+			</div>
+		{% endif %}
+		
+		{% if result_display_status == 'show_result' %}
+      <!-- ###########    GeneQuery resutls start ############### -->
+		  {% if input_type == 'GeneQuery' %}
+		    {% if result_status == 'result_status_dict' %}
+          <div class="alert alert-danger">
+            <p>The gene name you input returns several records in our database, please
+            use the following detailed information for a new search:</p>
+            <ul>
+              {% for i in recommend_gene_list %}
+                <li>{{ i }}</li>
+              {% endfor %}
+            </ul>
+            <h6>The gene you searched is: <b>{{ term_searched }}</b></h6>
+          </div>
+		    {% endif %}
+		    {% if result_status == 'result_status_false' %}
+          <div class="alert alert-danger text-center">
+            <h6>ADE cannot find the gene you searched.</h6>
+            <h6>The gene you searched is: <b>{{ term_searched }}</b></h6>
+          </div>            
+		    {% endif %}
+		    
+		    {% if result_status == 'result_status_str' %}
+		    <!-- GeneQuery Results-->
+		    <div class="row mt-2">
+		      <div class="col-6">
+            <table class="table flexFont">
+              <thead class="th-theme-bg">
+                <tr>
+                  <th scope="col" colspan="2" class="text-center">Gene Information</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width:30%" class="p-2">Gene Symbol :</td>
+                  <td style="width:70%" class="p-2">{{ params.gene_info.gene_symbol }}</td>
+                </tr>
+                <tr>
+                  <td class="p-2">Gene Aliases :</td>
+                  <td class="p-2">{{ params.gene_info.gene_aliases }}</td>
+                </tr>
+                <tr>
+                  <td class="p-2">Description :</td>
+                  <td class="p-2">{{ params.gene_info.gene_description }}</td>
+                </tr>
+                <tr>
+                  <td class="p-2">Other Designations :</td>
+                  <td class="p-2">
+                    {{ params.gene_info.gene_other_designations }}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="p-2">Map Location :</td>
+                  <td class="p-2">{{ params.gene_info.gene_map_location }}</td>
+                </tr>
+                <tr>
+                  <td class="p-2">Chromosome :</td>
+                  <td class="p-2">{{ params.gene_info.gene_chromosome }}</td>
+                </tr>
+                <tr>
+                  <td class="p-2">GeneAD Link :</td>
+                  <td class="p-2">
+                    <form action="{% url 'adgene_index' %}" method="POST" target="_blank">
+                    {% csrf_token %}
+                     <input type="hidden" name="SearchCate" id="SearchCate" value="SingleGene" checked>
+                     <button class="btn btn-secondary btn my-1" type="submit" id="GeneName" name="GeneName" value="{{ params.gene_info.gene_symbol }}" style="background-color:#d2b393;color:white;font-size:0.7vw;">GeneAD link for {{ params.gene_info.gene_symbol }}</button>
+                    </form>
+                  </td>
+                </tr>
+              </tbody>
+            </table>		      
+		      </div>
+		      <div class="col-6">
+            <script src="https://d3js.org/d3.v4.min.js" charset="utf-8"></script>
+            <script src="{% static 'pubad/js/pub_by_year_plot.js' %}" charset="utf-8"></script>
+            <div id="PubCountByYear"></div>
+		      </div>
+		    </div>
+		    <!-- Inhouse NLP Pipeline result -->
+		    <div class="row mt-2">
+		      <div class="col-12">
+		        <div class="jumbotron p-2 mt-4 mb-2 text-center title-theme-bg">
+		          <h5>Inhouse NLP Pipeline Mined Information</h5>
+		        </div>
+            <!-- inhouse pipeline Nav tabs -->
+            <ul class="nav nav-tabs pub-data-nav-tabs" role="tablist">
+              <li class="nav-item">
+              <a class="nav-link active" data-toggle="tab" href="#KeyWords">Key Words</a>
+              </li>
+              <li class="nav-item">
+              <a class="nav-link" data-toggle="tab" href="#DementiaType">Dementia Types</a>
+              </li>
+              <li class="nav-item">
+              <a class="nav-link" data-toggle="tab" href="#BrainRegions">Brain Regions</a>
+              </li>                
+              <li class="nav-item">
+              <a class="nav-link" data-toggle="tab" href="#MouseModels">Mouse Models</a>
+              </li>
+              <li class="nav-item">
+              <a class="nav-link" data-toggle="tab" href="#CoGenes">Co-occurred Genes</a>
+              </li>
+            </ul>          
+            <!-- inhouse pipeline Tab panes -->
+            <div class="tab-content pub-data-tab-content border border-top-0 p-3">
+              <!--  KeyWords Tab pane  -->
+              <div id="KeyWords" class="container tab-pane active">
+                {% if params.kw_final %}
+                <div class="row">
+                  <div class="col-10 offset-1 my-3">
+                    <p style="font-size:15px;line-height: 1.6;">
+                      ADE's NLP pipeline tries to identify 32 most important key words related to dementia research, details of 
+                      these key words are included in the Documentation page.
+                      The following dashboard shows the key words summary information we discovered from our NLP pipeline for current 
+                      query gene: {{ params.gene_info.gene_symbol }}.
+                    </p>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-7">
+                    <div id="KeyWordsBarChart"></div>
+                  </div>
+                  <div class="col-5">
+                    <img src="data:image/png;base64,{{ params.kw_wordcloud }}" height="100%" width="100%">
+                  </div>
+                </div>
+		            {% else %}
+                <div class="row text-center mt-5">
+                  <div class="col-12">
+                    <h5 style="color:#808080">No information in system</h5>
+                  </div>
+                </div>
+		            {% endif %}
+		          </div>
+              <!--  DementiaType Tab pane  -->
+              <div id="DementiaType" class="container tab-pane fade">
+                {% if params.dt_final %}
+                <div class="row">
+                  <div class="col-10 offset-1 my-3">
+                    <p style="font-size:15px;line-height: 1.6;">
+                      ADE's NLP pipeline identifies five main type of dementia, which includes Alzheimers Disease, 
+                      Vascular Dementia, Lewy Body Dementia, Frontotemporal Dementia and Mixed Dementia. The following 
+                      dashboard shows the dementia type summary information we discovered from our NLP pipeline for current 
+                      query gene {{ params.gene_info.gene_symbol }}.
+                    </p>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-12">
+                    <div id="DementiaTypeHorizontalBarChart"></div>
+                  </div>
+                </div>
+		            {% else %}
+                <div class="row text-center mt-5">
+                  <div class="col-12">
+                    <h5 style="color:#808080">No information in system</h5>
+                  </div>
+                </div>
+		            {% endif %}                
+		          </div>
+              <!--  BrainRegions Tab pane  -->
+              <div id="BrainRegions" class="container tab-pane fade">
+                {% if params.br_final %}
+                <div class="row">
+                  <div class="col-10 offset-1 my-3">
+                    <p style="font-size:15px;line-height: 1.6;">
+                      ADE's NLP pipeline identifies 13 main brain regions from all dementia related publications. Details of included brain regions can be found in Documentation page. 
+                      The following dashboard shows the brain region summary information we discovered from our NLP pipeline for current 
+                      query gene: {{ params.gene_info.gene_symbol }}.
+                    </p>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-12">
+                    <div id="BrainRegionsHorizontalBarChart"></div>
+                  </div>
+                </div>
+		            {% else %}
+                <div class="row text-center mt-5">
+                  <div class="col-12">
+                    <h5 style="color:#808080">No information in system</h5>
+                  </div>
+                </div>
+		            {% endif %}                                
+		          </div>
+              <!--  MouseModels Tab pane  -->
+              <div id="MouseModels" class="container tab-pane fade">
+                {% if params.mm_final %}
+                <div class="row">
+                  <div class="col-10 offset-1 my-3">
+                    <p style="font-size:15px;line-height: 1.6;">
+                      ADE's NLP pipeline tries to identify 29 currently available mouse models from all dementia related publications. 
+                      Detailed mouse model information can be found on <a href="https://www.model-ad.org/strain-table/" target="_blank">MODEL-AD website</a>. 
+                      The following dashboard shows the mouse model summary information we discovered from our NLP pipeline for current 
+                      query gene: {{ params.gene_info.gene_symbol }}.
+                    </p>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-12">
+                    <div id="MouseModelsHorizontalBarChart"></div>
+                  </div>
+                </div>
+		            {% else %}
+                <div class="row text-center mt-5">
+                  <div class="col-12">
+                    <h5 style="color:#808080">No information in system</h5>
+                  </div>
+                </div>
+		            {% endif %}                                                
+		          </div>
+		          
+		          <!--  Co-occurred Genes Tab pane  -->
+		          <div id="CoGenes" class="container tab-pane fade">
+                {% if params.cg_final %}
+                <div class="row">
+                  <div class="col-5 my-3 p-5">
+                    <p style="font-size:15px;line-height: 2;">
+                      The Lollipop plot on the right shows the number of publications that each gene (on y axis) is 
+                      co-occurred with the query gene ({{ params.gene_info.gene_symbol }}). This information can be used for 
+                      investigating the related genes based on gene-gene co-occurrence in publications. 
+                    </p>
+                    <br>
+                    
+                    <h6>Current Gene: <span style="color:red;">{{ params.gene_info.gene_symbol }}</span></h6>
+                  </div>
+                  <div class="col-7 my-3">
+                  <div id="CoGenesLolipopPlot"></div>
+                  </div>
+                </div>
+		            {% else %}
+                <div class="row text-center mt-5">
+                  <div class="col-12">
+                    <h5 style="color:#808080">No information in system</h5>
+                  </div>
+                </div>
+		            {% endif %}                                                
+		          
+		          
+		          </div>
+
+
+		        </div>
+		      </div>
+		    </div>
+		    <!-- CTD data result -->
+		    <div class="row mt-2">
+		      <div class="col-12">
+		        <div class="jumbotron p-2 mt-4 mb-2 text-center title-theme-bg">
+		          <h5>Dementia Related Information in CTD Database</h5>
+		        </div>
+		        <!-- placeholder -->
+		        {% if params.ctd_status %}
+            <div class="row p-3 mb-5">
+              <div class="col-12">
+                <div class="row">
+                  <div class="col-10 offset-1">
+                    <p style="font-size:15px;line-height: 1.6;">
+                    CTD is a robust, publicly available database that aims to advance understanding about how environmental exposures affect 
+                    human health. It provides manually curated information about chemical–gene/protein interactions, chemical–disease 
+                    and gene–disease relationships. These data are integrated with functional and pathway data to aid in development 
+                    of hypotheses about the mechanisms underlying environmentally influenced diseases <a href="http://ctdbase.org" target="_blank">(Source)</a>. 
+                    ADE integrated information from CTD database which are related to four main neurodegenerative disease, these include <b>Alzheimer's</b>, and <b>Huntington's disease</b>, <b>Parkinson Disease</b>, 
+                    <b>Lewy Body Dementia</b> and <b>Frontotemporal dementia</b>.
+                  
+                    </p>
+                  </div>
+                </div>
+              
+                <!-- CTD pipeline Nav tabs -->
+                <ul class="nav nav-tabs pub-data-nav-tabs" role="tablist">
+                  {% for curr_disease in params.ctd_disease %}
+                  <li class="nav-item ctdNavTabList">
+                  <a class="nav-link" data-toggle="tab" href="#{{curr_disease|remove_space}}">{{curr_disease}}</a>
+                  </li>
+                  {% endfor %}
+                </ul>          
+                <!-- CTD Tab panes -->
+                <div class="tab-content pub-data-tab-content border border-top-0 p-3">
+                  <!--  create CTD Tab panes according to disease -->
+                
+                  <!-- for start -->
+                  {% for curr_disease, curr_tab_info in params.ctd_tab_info.items %}
+                  <div id="{{curr_disease|remove_space}}" class="container tab-pane tab-pane-ctd fade">
+                    <div class="row p-4">
+                      <div class="col-4 pr-4">
+                        <p style="font-size:18px;line-height: 1.8;">
+                          Inference Score<a href="#"><span class="fa fa-question-circle" data-toggle="tooltip" title="Reflects the degree of similarity between CTD chemical–gene–disease networks and a similar scale-free random network."></span></a>: 
+                          <span style="color:red;">{{curr_tab_info.inf_score}}</span>
+                        </p>
+                        <p style="font-size:18px;line-height: 1.8;">
+                          Total Publicaitons<a href="#"><span class="fa fa-question-circle" data-toggle="tooltip" title="Total number of publications related to {{ params.gene_info.gene_symbol }} in CTD database."></span></a>: 
+                          <span style="color:red;">{{curr_tab_info.pub_count_all}}</span>
+                        </p>
+                        <p style="font-size:18px;line-height: 1.8;">
+                          Total Chemicals<a href="#"><span class="fa fa-question-circle" data-toggle="tooltip" title="Total number of chemicals related to {{ params.gene_info.gene_symbol }} in CTD database."></span></a>: 
+                          <span style="color:red;">{{curr_tab_info.chem_count_all}}</span>
+                        </p>
+                      
+                      </div>
+                      <div class="col-8">
+                        <div id="ctdBarPlot{{curr_disease|remove_space}}"></div>
+                      </div>
+                    </div>
+                  </div>
+                  {% endfor %}
+                  <!-- for end -->
+                
+                </div>
+              
+              
+              
+              
+              
+              </div>
+            </div>
+            {% else %}
+            <div class="row p-3 mb-5 border">
+              <div class="col-12 text-center">
+		            <br><br>
+		            <h5 style="color:#808080">No information for current query gene.</h5>
+		            <br><br>              
+              </div>
+            </div>
+            {% endif %}
+		      </div>
+		    </div>
+		    
+		    
+		    {% endif %}
+		  {% endif %}
+      <!-- ###########    GeneQuery resutls end ############### -->
+    {% endif %}
+      
+		
+		
+  
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+<script>
+//input box autocomplete
+var location_input=$('input[id="GeneName"]');
+location_input.autocomplete({
+	source: "/pubad/api/get_genenames_pubad/",
+	minLength: 2
+});
+
+//########==>>pub by year bar plot
+var data=JSON.parse('{{ params.year_final|safe }}');
+
+var canvas = d3.select('#PubCountByYear')
+				.append("div")
+				.classed("svg-container", true)//container class to make it responsive
+				.append('svg')
+				//responsive SVG needs these 2 attributes and no width and height attr
+				.attr("preserveAspectRatio", "xMinYMin meet")
+				.attr("viewBox", "-50 130 1000 600")
+				//class to make it responsive
+				.classed("svg-content-responsive", true); 
+
+var size = d3.select(".table"),
+    margin = {top: 20, right: 20, bottom: 30, left: 50},
+    width = +size.node().getBoundingClientRect().width - margin.left - margin.right,
+    height = +size.node().getBoundingClientRect().height - margin.top - margin.bottom;
+
+var svg = d3.select("svg");
+  
+var tooltip = d3.select("body").append("div").attr("class", "toolTip");
+
+var x = d3.scaleBand().rangeRound([0, 900]).padding(0.1),
+    y = d3.scaleLinear().rangeRound([500, 0]);
+
+var g = svg.append("g")
+    .attr("transform", "translate(0,200)");
+pub_by_year_plot(data);
+
+//########==>> KeyWords horizontal bar chart
+if ('{{ params.kw_final}}' != 'None') {
+  var KeyWordsCount=JSON.parse('{{ params.kw_final|safe }}');
+  var KeyWordsTarget = "#KeyWordsBarChart";
+  var kwMin = {{ params.kw_min }} - 0.5
+  var kwMax = {{ params.kw_max }}
+  //console.log(KeyWordsTarget);
+  PubBarchart(KeyWordsCount, KeyWordsTarget, "Key Words", "{{ params.gene_info.gene_symbol }}", kwMin, kwMax);
+}
+
+//########==>> DementiaType horizontal bar chart
+if ('{{ params.dt_final}}' != 'None') {
+  var DementiaTypeCount = JSON.parse('{{ params.dt_final|safe }}');
+  var DementiaTypeTarget = "#DementiaTypeHorizontalBarChart";
+  horizontalBarChart(DementiaTypeCount, DementiaTypeTarget, "Dementia Type", "{{ params.gene_info.gene_symbol }}");
+}
+
+//########==>> BrainRegions horizontal bar chart
+if ('{{ params.br_final}}' != 'None') {
+  var BrainRegionsCount = JSON.parse('{{ params.br_final|safe }}');
+  var BrainRegionsTarget = "#BrainRegionsHorizontalBarChart";
+  horizontalBarChart(BrainRegionsCount, BrainRegionsTarget, "Brain Regions", "{{ params.gene_info.gene_symbol }}");
+}
+
+//########==>> MouseModels horizontal bar chart
+if ('{{ params.mm_final}}' != 'None') {
+  var MouseModelsCount = JSON.parse('{{ params.mm_final|safe }}');
+  var MouseModelsTarget = "#MouseModelsHorizontalBarChart";
+  horizontalBarChart(MouseModelsCount, MouseModelsTarget, "Mouse Models", "{{ params.gene_info.gene_symbol }}");
+}
+//########==>> Co-occurred Genes Lolipop chart
+if ('{{ params.cg_final}}' != 'None') {
+  var CoGeneData = JSON.parse('{{ params.cg_final|safe }}');
+  var CoGeneTarget = "#CoGenesLolipopPlot";
+  loli_plot(CoGeneData, CoGeneTarget);
+}
+
+//########==>> CTD default show first nav tab
+$('.ctdNavTabList a:first').tab('show');
+$('[data-toggle="tooltip"]').tooltip();
+
+//########==>> CTD barplots
+if ( '{{params.ctd_status}}' == 'True') {
+  var ctdPlot = JSON.parse('{{ params.ctd_tab_plot|safe }}');
+  for (const currDisease in ctdPlot) {
+    var currTarget = '#ctdBarPlot'+currDisease.split(' ').join('_')
+    var currData = ctdPlot[currDisease]['plot_data'];
+    var currDataMin = ctdPlot[currDisease]['plot_data_min'];
+    var currDataMax = ctdPlot[currDisease]['plot_data_max'];
+    console.log(currTarget);
+    PubBarchartCTD(currData, currTarget, "Chemical", currDisease.split(' ').join('_'), currDataMin, currDataMax);
+    
+  }
+  
+  
+}
+
+
+</script>
+{% endblock %}
