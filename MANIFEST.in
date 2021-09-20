@@ -1,0 +1,2 @@
+recursive-include adexplorer_django_apps/static *
+recursive-include adexplorer_django_apps/templates *
