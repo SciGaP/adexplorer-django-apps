@@ -1,4 +1,4 @@
-{% extends 'adgene/base.html' %}
+{% extends 'base.html' %}
 {% block content %}
 {% load static %}
 {% load remove_space %}
@@ -49,6 +49,12 @@
 <script src="{% static 'pubad/js/pub_barbhart.js' %}" charset="utf-8"></script>
 <script src="{% static 'pubad/js/co_genes_lolipop_plot.js' %}" charset="utf-8"></script>
 
+<!-- BEGIN: airavata-django-portal base.html integration -->
+<div class="main-content-wrapper">
+  <main class="main-content">
+      <div class="container-fluid">
+<!-- END: airavata-django-portal base.html integration -->
+
 <div class="row mx-4 mt-3">
   <div class="col-10 offset-1">
 		<h4 sytle="color:#404040;">
@@ -91,7 +97,7 @@
 			</div>
 			<div class="row">
 			  <div class="col-10 offset-1 text-center">
-			    <img src="{% static 'adgene/ade_background.png' %}" style="width:100%;">
+			    <img src="{% static 'pubad/ade_background.png' %}" style="width:100%;">
 			  </div>
 			</div>
 		{% endif %}
@@ -437,9 +443,11 @@
 </div>
 
 
-
-
-
+<!-- BEGIN: airavata-django-portal base.html integration -->
+        </div>
+    </main>
+</div>
+<!-- END: airavata-django-portal base.html integration -->
 
 
 
