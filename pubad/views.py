@@ -1,9 +1,9 @@
 #django related imports
 from django.shortcuts import render
-from datamanage.models import *
+# from datamanage.models import *
 from pubad.models import *
-from adgene.models import *
-from datamanage.forms import *
+# from adgene.models import *
+# from datamanage.forms import *
 from django.conf import settings
 from django.http import HttpResponse, JsonResponse
 
