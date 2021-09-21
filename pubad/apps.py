@@ -10,7 +10,7 @@ class PubadConfig(AppConfig):
 
     # Set url_home to a namespaced URL that will be the homepage when the custom
     # app is selected from the main menu
-    url_home = "pubad:pubad_index"
+    # url_home = "pubad:pubad_index"
 
     # Set fa_icon_class to a FontAwesome CSS class for an icon to associate with
     # the custom app. Find an icon class at https://fontawesome.com/icons?d=gallery&p=2&s=regular,solid&m=free
