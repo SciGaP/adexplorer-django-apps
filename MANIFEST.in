@@ -1,2 +1,3 @@
 recursive-include pubad/static *
 recursive-include pubad/templates *
+recursive-include pubad/fixtures *

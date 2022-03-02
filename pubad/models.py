@@ -37,3 +37,20 @@ class GeneAliasesPub(models.Model):
     gene_aliases_note=models.CharField(max_length=500, null=True)
     def __str__(self):
         return '%d %s %s %s' % (self.ga_record_id, self.gene_symbol, self.aliases, self.gene_aliases_note)
+
+class GeneInfo(models.Model):
+    geneinfo_record_id=models.AutoField(primary_key=True)
+    gene_symbol=models.CharField(max_length=100, null=True)
+    gene_aliases=models.CharField(max_length=1000, null=True)
+    gene_description=models.CharField(max_length=1000, null=True)
+    gene_other_designations=models.CharField(max_length=1000, null=True)
+    gene_map_location=models.CharField(max_length=100, null=True)
+    gene_chromosome=models.CharField(max_length=50, null=True)
+    entrez_id=models.CharField(max_length=100, null=True)
+    ensembl_id=models.CharField(max_length=100, null=True)
+    uniprot_id=models.CharField(max_length=100, null=True)
+    refseq_accession=models.CharField(max_length=100, null=True)
+    chembl_target_id=models.CharField(max_length=100, null=True)
+    
+    def __str__(self):
+        return '%d %s %s %s %s %s %s %s %s %s %s %s' % (self.geneinfo_record_id, self.gene_symbol, self.gene_aliases, self.gene_description, self.gene_other_designations, self.gene_map_location, self.gene_chromosome, self.entrez_id, self.ensembl_id, self.uniprot_id, self.refseq_accession, self.chembl_target_id)

@@ -13,3 +13,9 @@
    ```
 
 3. Start (or restart) the Django Portal server.
+
+## Creating DB migrations
+
+```
+django-admin makemigrations --pythonpath . --settings pubad.tests.settings pubad
+```
