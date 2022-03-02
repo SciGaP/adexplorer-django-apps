@@ -116,7 +116,7 @@
                   <td class="p-2">Chromosome :</td>
                   <td class="p-2">{{ params.gene_info.gene_chromosome }}</td>
                 </tr>
-                <tr>
+                {% comment %} <tr>
                   <td class="p-2">GeneAD Link :</td>
                   <td class="p-2">
                     <form action="{% url 'adgene_index' %}" method="POST" target="_blank">
@@ -125,7 +125,7 @@
                      <button class="btn btn-secondary btn my-1" type="submit" id="GeneName" name="GeneName" value="{{ params.gene_info.gene_symbol }}" style="background-color:#d2b393;color:white;font-size:0.7vw;">GeneAD link for {{ params.gene_info.gene_symbol }}</button>
                     </form>
                   </td>
-                </tr>
+                </tr> {% endcomment %}
               </tbody>
             </table>		      
 		      </div>
