@@ -1,53 +1,8 @@
-{% extends 'base.html' %}
+{% extends './base.html' %}
 {% block content %}
 {% load static %}
 {% load remove_space %}
 
-<style>
-.flexFont {
-  font-size: 0.8em;
-  }
-.th-theme-bg {
-  background-color: #d0a47c;
-  color:white;
-  }
-.toolTip {
-  position: absolute;
-  display: none;
-  min-width: 30px;
-  height: auto;
-  background: white;
-  border: 0px;
-  padding: 5px;
-  text-align: center;
-  opacity: 0.9;
-}
-.title-theme-bg {
-  background-color: #d0a47c;
-  color: white;
-  }
-.horizontalbar:hover {
-  fill: #c99969;
-}
-.horizontalbar-y-axis {
-  font-size: 17px;
-}
-.horizontalbar-x-axis {
-  font-size: 15px;
-}
-.tab-pane {
-  height: 450px;
-}
-.tab-pane-ctd {
-  height: 430px;
-}
-.loli-y-axis {
-  font-size: 18px;
-}
-</style>
-<script src="{% static 'pubad/js/horizontal_barchart.js' %}" charset="utf-8"></script>
-<script src="{% static 'pubad/js/pub_barbhart.js' %}" charset="utf-8"></script>
-<script src="{% static 'pubad/js/co_genes_lolipop_plot.js' %}" charset="utf-8"></script>
 
 <!-- BEGIN: airavata-django-portal base.html integration -->
 <div class="main-content-wrapper">
@@ -449,9 +404,59 @@
 </div>
 <!-- END: airavata-django-portal base.html integration -->
 
+{% endblock content %}
 
+{% block extra-css %}
 
+<style>
+.flexFont {
+  font-size: 0.8em;
+  }
+.th-theme-bg {
+  background-color: #d0a47c;
+  color:white;
+  }
+.toolTip {
+  position: absolute;
+  display: none;
+  min-width: 30px;
+  height: auto;
+  background: white;
+  border: 0px;
+  padding: 5px;
+  text-align: center;
+  opacity: 0.9;
+}
+.title-theme-bg {
+  background-color: #d0a47c;
+  color: white;
+  }
+.horizontalbar:hover {
+  fill: #c99969;
+}
+.horizontalbar-y-axis {
+  font-size: 17px;
+}
+.horizontalbar-x-axis {
+  font-size: 15px;
+}
+.tab-pane {
+  height: 450px;
+}
+.tab-pane-ctd {
+  height: 430px;
+}
+.loli-y-axis {
+  font-size: 18px;
+}
+</style>
+{% endblock extra-css %}
 
+{% block extra-scripts %}
+
+<script src="{% static 'pubad/js/horizontal_barchart.js' %}" charset="utf-8"></script>
+<script src="{% static 'pubad/js/pub_barbhart.js' %}" charset="utf-8"></script>
+<script src="{% static 'pubad/js/co_genes_lolipop_plot.js' %}" charset="utf-8"></script>
 <script>
 //input box autocomplete
 var location_input=$('input[id="GeneName"]');
@@ -548,4 +553,5 @@ if ( '{{params.ctd_status}}' == 'True') {
 
 
 </script>
-{% endblock %}
+
+{% endblock extra-scripts %}
