@@ -36,7 +36,7 @@ var loli_plot = function(data, target) {
 var y = d3.scaleBand()
   .rangeRound([ 0, 450 ])
   .domain(data.map(function(d) { return d.gene_name; }))
-  .padding(1);
+  .paddingInner(1);
 svg_loli.append("g")
   .attr("class", "loli-y-axis")
   .attr("font-size", "15")
@@ -84,6 +84,4 @@ svg_loli.append("g").append("text")
                .style("font-size", "20px")
                .attr("transform","translate(300,500)")
                .text("Occurrence Count");
-
-
 }

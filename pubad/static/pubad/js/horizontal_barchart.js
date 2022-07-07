@@ -59,7 +59,7 @@ function horizontalBarChart (CountData, TargetDiv, TitleName, CurrGene) {
 
 	var y = d3.scaleBand()
 			  .rangeRound([350, 0])
-			  .padding(0.1);
+			  .paddingInner(0.1);
 
 	var x = d3.scaleLinear()
 			  .rangeRound([0, 800]);

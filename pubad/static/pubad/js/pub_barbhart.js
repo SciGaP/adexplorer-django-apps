@@ -16,7 +16,7 @@ var PubBarchart = function(CountData, TargetDiv, TitleName, CurrGene, kwMin, kwM
   
 	var tooltip = d3.select("body").append("div").attr("class", "toolTip");
 
-	var x = d3.scaleBand().rangeRound([0, 900]).padding(0.3),
+	var x = d3.scaleBand().rangeRound([0, 900]).paddingInner(0.3),
 		y = d3.scaleLinear().rangeRound([330, 0]);
 
 
@@ -126,7 +126,7 @@ var PubBarchartCTD = function(CountData, TargetDiv, TitleName, CurrID, kwMin, kw
   
 	var tooltip = d3.select("body").append("div").attr("class", "toolTip");
 
-	var x = d3.scaleBand().rangeRound([0, 900]).padding(0.3),
+	var x = d3.scaleBand().rangeRound([0, 900]).paddingInner(0.3),
 		y = d3.scaleLinear().rangeRound([330, 0]);
 
 
