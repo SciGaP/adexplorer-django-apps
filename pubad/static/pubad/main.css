@@ -1,0 +1,53 @@
+.flexFont {
+    font-size: 0.8em;
+}
+
+.th-theme-bg {
+    background-color: #d0a47c;
+    color: white;
+}
+
+.toolTip {
+    position: absolute;
+    display: none;
+    min-width: 30px;
+    height: auto;
+    background: white;
+    border: 0px;
+    padding: 5px;
+    text-align: center;
+    opacity: 0.9;
+}
+
+.title-theme-bg {
+    background-color: #d0a47c;
+    color: white;
+}
+
+.horizontalbar:hover {
+    fill: #c99969;
+}
+
+.horizontalbar-y-axis {
+    font-size: 17px;
+}
+
+.horizontalbar-x-axis {
+    font-size: 15px;
+}
+
+.tab-pane {
+    height: 450px;
+}
+
+.tab-pane-ctd {
+    height: 430px;
+}
+
+.loli-y-axis {
+    font-size: 18px;
+}
+
+.app-title {
+    color: #404040;
+}
